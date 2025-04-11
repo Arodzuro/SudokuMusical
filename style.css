@@ -1,116 +1,120 @@
 body {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #111;
-    color: #fff;
-    text-align: center;
-    padding: 2rem;
-  }
-  
+  font-family: "Segoe UI", sans-serif;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+}
+
+#sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 50px);
+  grid-template-rows: repeat(9, 50px);
+  gap: 2px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.cell {
+  background-color: #222;
+  border: 1px solid #444;
+  font-size: 32px;
+  line-height: 50px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#sudoku-board .cell:nth-child(3n):not(:nth-child(9n)) {
+  border-right: 2px solid #0dff05;
+}
+
+#sudoku-board .cell:nth-child(n+19):nth-child(-n+27),
+#sudoku-board .cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 2px solid #0dff05;
+}
+.cell.prefilled {
+  background-color: #333;
+  cursor: default;
+}
+
+.difficulty-selector button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #6610f2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.symbols {
+  margin-top: 30px;
+}
+
+#symbol-picker {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.symbol {
+  font-size: 32px;
+  padding: 10px;
+  background-color: #333;
+  cursor: pointer;
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+
+.symbol.selected {
+  background-color: #6610f2;
+}
+
+#validate-btn, #reiniciar {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #9c27b0;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: background-color 0.3s;
+}
+
+#validate-btn:hover {
+  background-color: #ba68c8;
+}
+
+@media (max-width: 600px) {
   #sudoku-board {
-    display: grid;
-    grid-template-columns: repeat(9, 50px);
-    grid-template-rows: repeat(9, 50px);
-    gap: 2px;
-    justify-content: center;
-    margin: 20px auto;
-  }
-  
-  .cell {
-    background-color: #222;
-    border: 1px solid #444;
-    font-size: 32px;
-    line-height: 50px;
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  #sudoku-board .cell:nth-child(3n):not(:nth-child(9n)) {
-    border-right: 2px solid #0dff05;
-  }
-  
-  #sudoku-board .cell:nth-child(n+19):nth-child(-n+27),
-  #sudoku-board .cell:nth-child(n+46):nth-child(-n+54) {
-    border-bottom: 2px solid #0dff05;
-  }
-  .cell.prefilled {
-    background-color: #333;
-    cursor: default;
-  }
-  
-  .difficulty-selector button {
-    margin: 0 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #6610f2;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .symbols {
-    margin-top: 30px;
-  }
-  
-  #symbol-picker {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .symbol {
-    font-size: 32px;
-    padding: 10px;
-    background-color: #333;
-    cursor: pointer;
-    border: 1px solid #555;
-    border-radius: 5px;
-  }
-  
-  .symbol.selected {
-    background-color: #6610f2;
-  }
-  
-  #validate-btn, #reiniciar {
-    margin-top: 20px;
-    padding: 12px 24px;
-    background-color: #9c27b0;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: background-color 0.3s;
-  }
-  
-  #validate-btn:hover {
-    background-color: #ba68c8;
+    grid-template-columns: repeat(9, 35px);
+    grid-template-rows: repeat(9, 35px);
   }
 
-  @media (max-width: 600px) {
-    #sudoku-board {
-      grid-template-columns: repeat(9, 35px);
-      grid-template-rows: repeat(9, 35px);
-    }
-  
-    .cell {
-      font-size: 20px;
-      line-height: 35px;
-    }
-  
-    .difficulty-selector button,
-    #validate-btn {
-      font-size: 14px;
-      padding: 8px 16px;
-    }
-  
-    .symbol {
-      font-size: 24px;
-      padding: 6px;
-    }
+  .cell {
+    font-size: 20px;
+    line-height: 35px;
   }
-  
+
+  .difficulty-selector button,
+  #validate-btn {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .symbol {
+    font-size: 24px;
+    padding: 6px;
+  }
+}
+
+.cell.highlight {
+  background-color: #4a148c;
+  box-shadow: 0 0 5px #ab47bc;
+}

@@ -1,6 +1,7 @@
 const symbols = ["𝅘𝅥", "𝅘𝅥𝅮", "𝅘𝅥𝅯", "𝅘𝅥𝅰", "𝅗𝅥", "𝄞", "𝄢", "𝄡", "𝅝"]; // 9 símbolos
 
 let selectedSymbol = null;
+let currentDifficulty = "easy";
 
 function createBoard(puzzle) {
   const board = document.getElementById("sudoku-board");
@@ -18,6 +19,10 @@ function createBoard(puzzle) {
         cell.addEventListener("click", () => {
           if (selectedSymbol && !cell.classList.contains("prefilled")) {
             cell.textContent = selectedSymbol;
+
+            if (currentDifficulty === "easy" || currentDifficulty === "medium") {
+              highlightSameSymbols(selectedSymbol);
+            }
           }
         });
       }
@@ -26,6 +31,16 @@ function createBoard(puzzle) {
     });
   });
 }
+
+function highlightSameSymbols(symbol) {
+  document.querySelectorAll(".cell").forEach(cell => {
+    cell.classList.remove("highlight");
+    if (cell.textContent === symbol) {
+      cell.classList.add("highlight");
+    }
+  });
+}
+
 
 function createSymbolPicker() {
   const picker = document.getElementById("symbol-picker");
@@ -109,11 +124,12 @@ const puzzles = {
 };
 
 function loadPuzzle(difficulty) {
-    const full = generateCompleteBoard();
-    const partial = removeCells(full, difficulty);
-    const symbolBoard = numberToSymbolBoard(partial);
-    createBoard(symbolBoard);
-  }
+  currentDifficulty = difficulty; // Guardamos el nivel
+  const full = generateCompleteBoard();
+  const partial = removeCells(full, difficulty);
+  const symbolBoard = numberToSymbolBoard(partial);
+  createBoard(symbolBoard);
+}
 
   function getCurrentBoard() {
     const cells = document.querySelectorAll(".cell");
