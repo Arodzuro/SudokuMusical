@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Musical</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Sudoku Musical</h1>
+
+  <div class="difficulty-selector">
+    <button onclick="loadPuzzle('easy')">Fácil</button>
+    <button onclick="loadPuzzle('medium')">Medio</button>
+    <button onclick="loadPuzzle('hard')">Difícil</button>
+  </div>
+
+  <div id="sudoku-board"></div>
+  <button id="validate-btn" onclick="validateSolution()">Validar Solución</button>
+  <button id="reiniciar" onclick="loadPuzzle('easy')">Reiniciar</button>
+
+  <div class="symbols">
+    <h2>Símbolos disponibles</h2>
+    <div id="symbol-picker"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
