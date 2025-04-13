@@ -16,16 +16,16 @@ function createBoard(puzzle) {
         cell.textContent = symbol;
         cell.classList.add("prefilled");
       } else {
-        cell.classList.add("editable"); // Agregamos clase para identificar editables
-
+        cell.classList.add("editable");
         cell.addEventListener("click", () => {
-          if (selectedSymbol && !cell.classList.contains("prefilled")) {
-            cell.textContent = selectedSymbol;
+          if (!cell.classList.contains("prefilled")) {
+            cell.textContent = selectedSymbol || "";
+            if (selectedSymbol) {
+              highlightSameSymbols(cell.textContent);
+            } else {
+              document.querySelectorAll(".cell").forEach(c => c.classList.remove("highlight"));
+            }
 
-            // Iluminar símbolos iguales en todos los niveles
-            highlightSameSymbols(selectedSymbol);
-
-            // Verificar si el tablero está completo
             const allFilled = Array.from(document.querySelectorAll('.cell.editable'))
               .every(cell => cell.textContent.trim() !== '');
 
@@ -52,6 +52,8 @@ function highlightSameSymbols(symbol) {
 
 function createSymbolPicker() {
   const picker = document.getElementById("symbol-picker");
+  picker.innerHTML = "";
+
   symbols.forEach(sym => {
     const span = document.createElement("div");
     span.className = "symbol";
@@ -63,6 +65,18 @@ function createSymbolPicker() {
     });
     picker.appendChild(span);
   });
+
+  // Borrador
+  const eraser = document.createElement("div");
+  eraser.className = "symbol";
+  eraser.textContent = "🧽";
+  eraser.title = "Borrador";
+  eraser.addEventListener("click", () => {
+    document.querySelectorAll(".symbol").forEach(s => s.classList.remove("selected"));
+    eraser.classList.add("selected");
+    selectedSymbol = null;
+  });
+  picker.appendChild(eraser);
 }
 
 function generateCompleteBoard() {
@@ -117,6 +131,19 @@ function numberToSymbolBoard(board) {
   return board.map(row => row.map(cell => (cell ? symbols[cell - 1] : null)));
 }
 
+const puzzles = {
+  easy: [
+    [null, null, "𝄞", null, "𝄌", null, null, null, "𝅘𝅥𝅰"],
+    // ...
+  ],
+  medium: [
+    // ...
+  ],
+  hard: [
+    // ...
+  ]
+};
+
 function loadPuzzle(difficulty) {
   currentDifficulty = difficulty;
   const full = generateCompleteBoard();
@@ -163,28 +190,32 @@ function isBoardCompleteAndValid(board) {
 
 function validateSolution() {
   const board = getCurrentBoard();
-  const isValid = isBoardCompleteAndValid(board);
-  const cells = document.querySelectorAll(".cell");
+  const cells = document.querySelectorAll(".cell.editable");
 
-  if (isValid) {
+  // Quitar clases previas de error
+  cells.forEach(cell => cell.classList.remove("error"));
+
+  if (isBoardCompleteAndValid(board)) {
     alert("¡Felicidades! Sudoku musical completo y correcto 🎶🎉");
-    cells.forEach(cell => cell.classList.remove("incorrect"));
   } else {
-    alert("Algo no está bien aún. ¡Sigue intentándolo!");
-    const solution = getCurrentBoard(); // solución actual
+    // Marcar celdas incorrectas
+    const correctBoard = getCorrectBoardSymbols();
     cells.forEach((cell, index) => {
       const row = Math.floor(index / 9);
       const col = index % 9;
-      const sym = cell.textContent;
-      const expected = symbols[solution[row][col] - 1];
-      if (cell.classList.contains("editable") && sym && sym !== expected) {
-        cell.classList.add("incorrect");
-      } else {
-        cell.classList.remove("incorrect");
+      const expectedSymbol = correctBoard[row][col];
+      if (cell.textContent !== expectedSymbol) {
+        cell.classList.add("error");
       }
     });
+    alert("Algo no está bien aún. ¡Sigue intentándolo!");
   }
 }
+function getCorrectBoardSymbols() {
+  const full = generateCompleteBoard(); // Genera un tablero nuevo (el mismo método usado en loadPuzzle)
+  return numberToSymbolBoard(full); // Lo convierte a símbolos para comparar
+}
+
 
 window.onload = () => {
   createSymbolPicker();
