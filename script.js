@@ -190,6 +190,71 @@ function isBoardCompleteAndValid(board) {
 
 function validateSolution() {
   const board = getCurrentBoard();
+  let isValid = true;
+
+  // Limpiar errores anteriores
+  document.querySelectorAll(".cell").forEach(cell => cell.classList.remove("error"));
+
+  for (let i = 0; i < 9; i++) {
+    const row = board[i];
+    const col = board.map(r => r[i]);
+    const box = [];
+    const rowStart = 3 * Math.floor(i / 3);
+    const colStart = 3 * (i % 3);
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        box.push(board[rowStart + r][colStart + c]);
+      }
+    }
+
+    if (!checkGroup(row)) highlightErrors('row', i), isValid = false;
+    if (!checkGroup(col)) highlightErrors('col', i), isValid = false;
+    if (!checkGroup(box)) highlightErrors('box', i), isValid = false;
+  }
+
+  if (isValid) {
+    alert("¡Correcto! Sudoku completado.");
+  } else {
+    alert("Hay errores en tu solución.");
+  }
+}
+
+// Helper: Checa si un grupo tiene 9 valores únicos y válidos
+function checkGroup(group) {
+  const nums = group.filter(Boolean);
+  return nums.length === 9 && new Set(nums).size === 9;
+}
+
+// Resalta errores según tipo de grupo
+function highlightErrors(type, index) {
+  const cells = document.querySelectorAll(".cell");
+
+  for (let i = 0; i < 9; i++) {
+    let idx;
+    switch (type) {
+      case 'row':
+        idx = index * 9 + i;
+        break;
+      case 'col':
+        idx = i * 9 + index;
+        break;
+      case 'box':
+        const rowStart = 3 * Math.floor(index / 3);
+        const colStart = 3 * (index % 3);
+        const r = rowStart + Math.floor(i / 3);
+        const c = colStart + (i % 3);
+        idx = r * 9 + c;
+        break;
+    }
+    const cell = cells[idx];
+    if (cell && cell.classList.contains("editable")) {
+      cell.classList.add("error");
+    }
+  }
+}
+
+/*function validateSolution() {
+  const board = getCurrentBoard();
   const cells = document.querySelectorAll(".cell.editable");
 
   // Quitar clases previas de error
@@ -210,7 +275,7 @@ function validateSolution() {
     });
     alert("Algo no está bien aún. ¡Sigue intentándolo!");
   }
-}
+}*/
 function getCorrectBoardSymbols() {
   const full = generateCompleteBoard(); // Genera un tablero nuevo (el mismo método usado en loadPuzzle)
   return numberToSymbolBoard(full); // Lo convierte a símbolos para comparar
